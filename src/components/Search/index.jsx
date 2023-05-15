@@ -1,34 +1,35 @@
-import React from 'react'
-import debounce from 'lodash.debounce'
+import React from 'react';
+import { setSearchValue } from '../../redux/slices/filterSlice';
+import debounce from 'lodash.debounce';
+import { useDispatch } from 'react-redux';
 
 import styles from './Search.module.scss';
-import { SearchContext } from '../../App';
 
 const Search = () => {
-	const [value, setValue] = React.useState('');
-	const {setSearchValue} = React.useContext(SearchContext);
-	const inputRef = React.useRef();
+  const dispatch = useDispatch();
+  const [value, setValue] = React.useState('');
+  const inputRef = React.useRef();
 
-	const onClickClear = () => {
-		setSearchValue('');
-		setValue('');
-		inputRef.current.focus();
-	};
+  const onClickClear = () => {
+    dispatch(setSearchValue(''));
+    setValue('');
+    inputRef.current.focus();
+  };
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const updateSearchValue = React.useCallback(
-		debounce((str) => {
-			setSearchValue(str);
-		}, 150),
-		[],
-	);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateSearchValue = React.useCallback(
+    debounce((str) => {
+      dispatch(setSearchValue(str));
+    }, 150),
+    [],
+  );
 
-	const onChangeInput = (event) => {
-		setValue(event.target.value);
-		updateSearchValue(event.target.value);
-	};
+  const onChangeInput = (event) => {
+    setValue(event.target.value);
+    updateSearchValue(event.target.value);
+  };
 
-	return (
+  return (
     <div className={styles.root}>
       <svg
         className={styles.icon}
@@ -64,7 +65,7 @@ const Search = () => {
         />
       </svg>
       <input
-				ref={inputRef}
+        ref={inputRef}
         value={value}
         onChange={onChangeInput}
         className={styles.input}
@@ -81,6 +82,6 @@ const Search = () => {
       )}
     </div>
   );
-}
+};
 
 export default Search;
